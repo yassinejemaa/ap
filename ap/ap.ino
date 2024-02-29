@@ -9,8 +9,7 @@ void setup() {
     WiFi.begin(ssid, password); // Connect to your router
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
-        Serial.print("."); //this is a test adding something new
-        
+        Serial.print("."); //this is a test adding something new 1
     }
     Serial.println("\nConnected to Wi-Fi");
     Serial.print("IP address: ");
