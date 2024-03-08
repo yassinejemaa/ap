@@ -1,24 +1,31 @@
-#include <ESP8266WiFi.h>
+#include <Arduino.h>
+#include <painlessMesh.h>
+#define LED_PIN 14
 
-const char* ssid = "YASSINE 6827"; // Set your router's SSID
-const char* password = "00000000"; // Set your router's password
+painlessMesh mesh;
+
+void receivedCallback(uint32_t from, String &msg) {
+  Serial.printf("Received from %u: %s\n", from, msg.c_str());
+
+  // Check the content of the message
+  if (msg == "toggleLED") {
+    digitalWrite(LED_PIN, HIGH); // Turn on the LED
+    delay(1000); // Wait for 1 second
+    digitalWrite(LED_PIN, LOW); // Turn off the LED
+  }
+}
 
 void setup() {
-    Serial.begin(9600);
-    WiFi.mode(WIFI_AP_STA); // Set both STA and AP mode
-    WiFi.begin(ssid, password); // Connect to your router
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.print("."); //this is a test adding something new 1
-    }
-    Serial.println("\nConnected to Wi-Fi");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+  Serial.begin(9600);
 
-    // Set up your AP here
-    // Example: WiFi.softAP("MyESP8266AP", "APPassword");
+  pinMode(LED_PIN, OUTPUT);
+
+  mesh.setDebugMsgTypes(ERROR | STARTUP | CONNECTION);
+  mesh.init("testing", "00000000", 5555);
+  mesh.onReceive(receivedCallback);
 }
 
 void loop() {
-    // Your additional code here
+  mesh.update();
+  
 }
